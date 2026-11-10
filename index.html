@@ -1,0 +1,527 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#263A2D">
+
+    <title>Central Operacional</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+    <!-- TELA DE LOGIN -->
+    <section id="loginView" class="login-screen">
+        <div class="login-card">
+
+            <div class="brand-mark">CO</div>
+
+            <p class="eyebrow">GESTÃO OPERACIONAL</p>
+
+            <h1>Central Operacional</h1>
+
+            <p class="muted small-text">
+                Entre para acessar seu ambiente de trabalho.
+            </p>
+
+            <form id="loginForm">
+
+                <label for="loginEmail">E-mail</label>
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="seuemail@empresa.com"
+                    autocomplete="username"
+                    required
+                >
+
+                <label for="loginPassword">Senha</label>
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Digite sua senha"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button type="submit" class="btn primary full">
+                    Entrar na plataforma
+                </button>
+
+                <p id="loginMessage" class="form-message"></p>
+
+            </form>
+        </div>
+    </section>
+
+
+    <!-- APLICAÇÃO -->
+    <div id="appView" class="app-shell hidden">
+
+        <!-- CABEÇALHO -->
+        <header class="topbar">
+
+            <div class="brand">
+                <div class="brand-mark small">CO</div>
+
+                <div>
+                    <strong>Central Operacional</strong>
+                    <span>Controle e organização</span>
+                </div>
+            </div>
+
+            <div class="top-actions">
+
+                <div id="connectionStatus" class="connection">
+                    <i></i>
+                    <span>Conectando...</span>
+                </div>
+
+                <button id="logoutBtn" class="btn subtle small-btn">
+                    Sair
+                </button>
+
+            </div>
+        </header>
+
+
+        <!-- CONTEÚDO -->
+        <main class="workspace">
+
+            <!-- BOAS-VINDAS -->
+            <section class="welcome-row">
+
+                <div>
+                    <p class="eyebrow">AMBIENTE DE TRABALHO</p>
+                    <h1>Visão geral</h1>
+
+                    <p class="muted">
+                        Organize, acompanhe e melhore suas operações.
+                    </p>
+                </div>
+
+                <div class="today-card">
+                    <span>DATA DE HOJE</span>
+                    <strong id="todayDate">--/--/----</strong>
+                </div>
+
+            </section>
+
+
+            <!-- MENU PRINCIPAL -->
+            <nav class="tabs">
+
+                <button class="tab active" data-view="activities">
+                    Atividades
+                </button>
+
+                <button class="tab" data-view="operations">
+                    Operações
+                </button>
+
+                <button class="tab" data-view="emails">
+                    E-mails
+                </button>
+
+                <button class="tab" data-view="reports">
+                    Relatórios
+                </button>
+
+                <button class="tab" data-view="improvements">
+                    Melhorias
+                </button>
+
+            </nav>
+
+
+            <!-- ATIVIDADES -->
+            <section id="activitiesView" class="view active-view">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">ACOMPANHAMENTO</p>
+                        <h2>Minhas atividades</h2>
+                        <p class="muted">Controle suas tarefas e pendências.</p>
+                    </div>
+
+                    <button class="btn primary" data-add="activities">
+                        + Nova atividade
+                    </button>
+                </div>
+
+                <div class="metric-grid">
+
+                    <div class="metric">
+                        <span>Total de atividades</span>
+                        <strong id="metricActivities">0</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>Em andamento</span>
+                        <strong id="metricInProgress">0</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>Concluídas</span>
+                        <strong id="metricCompleted">0</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>Pendentes</span>
+                        <strong id="metricPending">0</strong>
+                    </div>
+
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-toolbar">
+                        <h3>Lista de atividades</h3>
+
+                        <input
+                            type="search"
+                            class="search-input"
+                            data-search="activities"
+                            placeholder="Pesquisar atividade..."
+                        >
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Atividade</th>
+                                    <th>Categoria</th>
+                                    <th>Prioridade</th>
+                                    <th>Prazo</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="activitiesTable"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </section>
+
+
+            <!-- OPERAÇÕES -->
+            <section id="operationsView" class="view">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">ROTINAS INTERNAS</p>
+                        <h2>Operações</h2>
+                        <p class="muted">
+                            Centralize os registros das atividades operacionais.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="subtabs">
+
+                    <button class="subtab active" data-operation="invoices">
+                        Notas fiscais
+                    </button>
+
+                    <button class="subtab" data-operation="orders">
+                        Pedidos
+                    </button>
+
+                    <button class="subtab" data-operation="receipts">
+                        Recebimentos
+                    </button>
+
+                    <button class="subtab" data-operation="stock">
+                        Estoque
+                    </button>
+
+                </div>
+
+                <div class="section-heading">
+                    <div>
+                        <h2 id="operationTitle">Notas fiscais</h2>
+                        <p id="operationDescription" class="muted">
+                            Controle das notas fiscais recebidas e lançadas.
+                        </p>
+                    </div>
+
+                    <button id="operationAddBtn" class="btn primary" data-add="invoices">
+                        + Novo registro
+                    </button>
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-toolbar">
+                        <h3 id="operationTableTitle">Registros</h3>
+
+                        <input
+                            type="search"
+                            id="operationSearch"
+                            class="search-input"
+                            placeholder="Pesquisar registro..."
+                        >
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead id="operationTableHead"></thead>
+                            <tbody id="operationTableBody"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- E-MAILS -->
+            <section id="emailsView" class="view">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">COMUNICAÇÃO</p>
+                        <h2>Controle de e-mails</h2>
+                        <p class="muted">
+                            Acompanhe mensagens que precisam de atenção.
+                        </p>
+                    </div>
+
+                    <button class="btn primary" data-add="emails">
+                        + Registrar e-mail
+                    </button>
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-toolbar">
+                        <h3>E-mails registrados</h3>
+
+                        <input
+                            type="search"
+                            class="search-input"
+                            data-search="emails"
+                            placeholder="Pesquisar e-mail..."
+                        >
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Assunto</th>
+                                    <th>Remetente</th>
+                                    <th>Recebimento</th>
+                                    <th>Prazo</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="emailsTable"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- RELATÓRIOS -->
+            <section id="reportsView" class="view">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">ANÁLISE OPERACIONAL</p>
+                        <h2>Relatórios</h2>
+                        <p class="muted">
+                            Acompanhe os registros da sua operação.
+                        </p>
+                    </div>
+
+                    <button id="refreshReportsBtn" class="btn secondary">
+                        Atualizar dados
+                    </button>
+                </div>
+
+                <div class="metric-grid">
+
+                    <div class="metric">
+                        <span>Notas fiscais</span>
+                        <strong id="reportInvoices">0</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>Pedidos</span>
+                        <strong id="reportOrders">0</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>Recebimentos</span>
+                        <strong id="reportReceipts">0</strong>
+                    </div>
+
+                    <div class="metric">
+                        <span>Produtos cadastrados</span>
+                        <strong id="reportStock">0</strong>
+                    </div>
+
+                </div>
+
+                <div class="report-grid">
+
+                    <div class="panel">
+                        <h3>Atividades por status</h3>
+                        <div id="activityBreakdown" class="breakdown"></div>
+                    </div>
+
+                    <div class="panel">
+                        <h3>Estoque abaixo do mínimo</h3>
+                        <div id="stockWarnings" class="breakdown"></div>
+                    </div>
+
+                </div>
+
+                <p class="report-note">
+                    Os relatórios consideram os registros disponíveis para sua conta.
+                </p>
+
+            </section>
+
+
+            <!-- MELHORIAS -->
+            <section id="improvementsView" class="view">
+
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">EVOLUÇÃO CONTÍNUA</p>
+                        <h2>Melhorias operacionais</h2>
+                        <p class="muted">
+                            Registre problemas, propostas e resultados.
+                        </p>
+                    </div>
+
+                    <button class="btn primary" data-add="improvements">
+                        + Nova melhoria
+                    </button>
+                </div>
+
+                <div class="panel">
+
+                    <div class="panel-toolbar">
+                        <h3>Projetos de melhoria</h3>
+
+                        <input
+                            type="search"
+                            class="search-input"
+                            data-search="improvements"
+                            placeholder="Pesquisar melhoria..."
+                        >
+                    </div>
+
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Melhoria</th>
+                                    <th>Problema</th>
+                                    <th>Proposta</th>
+                                    <th>Status</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="improvementsTable"></tbody>
+                        </table>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- RODAPÉ -->
+            <footer class="footer">
+                <span>Central Operacional</span>
+                <span>Organização • Controle • Evolução</span>
+            </footer>
+
+        </main>
+    </div>
+
+
+    <!-- MODAL DE CADASTRO E EDIÇÃO -->
+    <dialog id="recordDialog" class="record-dialog">
+
+        <form id="recordForm">
+
+            <div class="dialog-heading">
+
+                <div>
+                    <p class="eyebrow">REGISTRO OPERACIONAL</p>
+                    <h2 id="dialogTitle">Novo registro</h2>
+                </div>
+
+                <button
+                    type="button"
+                    id="closeDialogBtn"
+                    class="icon-btn"
+                    aria-label="Fechar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <div id="formFields" class="form-grid"></div>
+
+            <p id="formMessage" class="form-message"></p>
+
+            <div class="dialog-actions">
+
+                <button
+                    type="button"
+                    id="cancelDialogBtn"
+                    class="btn subtle"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    id="saveRecordBtn"
+                    class="btn primary"
+                >
+                    Salvar registro
+                </button>
+
+            </div>
+
+        </form>
+
+    </dialog>
+
+
+    <!-- NOTIFICAÇÕES -->
+    <div id="toast" class="toast" role="status"></div>
+
+
+    <!-- JAVASCRIPT -->
+    <script src="js/app.js"></script>
+
+</body>
+</html>
